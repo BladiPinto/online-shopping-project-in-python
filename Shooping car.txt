@@ -21,3 +21,9 @@ for price in prices
 
 print()
 print(fYour total is ${total})
+print(fYour total is ${total})
+print(fYour total is ${total})
+print(fYour total is ${total})
+print(fYour total is ${total})
+print(fYour total is ${total})
+
