@@ -24,36 +24,36 @@ def display_info():
 
              reader1 = csv.DictReader(file1)
                          
-             print"USER:", args.user, "\n"
+             print("USER:", args.user, "\n")
 
              if args.purchaseDate :
-                  print"Date of Purchase:", args.purchaseDate
-      	          for row1 in reader1:
+                  print("Date of Purchase:", args.purchaseDate)
+                  for row1 in reader1:
                       if args.user in row1['user'] and args.purchaseDate in row1['date_of_purchase']:
                            item = row1['item']
                            cost_of_purchase = row1['cost_of_purchase']
-                           print "Item:", item
-                           print "Cost of Purchase:", cost_of_purchase, "\n"
+                           print("Item:", item)
+                           print("Cost of Purchase:", cost_of_purchase, "\n")
                            break   
              else:
-                  for row1 in reader1:
-                      if args.user in row1['user']:
+                    for row1 in reader1:
+                        if args.user in row1['user']:
                           item = row1['item']
                           cost_of_purchase = row1['cost_of_purchase']
                           date_of_purchase = row1['date_of_purchase'] 
 
-                          print "Date of Purchase:" , date_of_purchase
-                          print "Item:", item
-                          print "Cost of Purchase:", cost_of_purchase, "\n"
+                          print("Date of Purchase:" , date_of_purchase)
+                          print("Item:", item)
+                          print("Cost of Purchase:", cost_of_purchase, "\n")
                          
                                            
-   except argparse.ArgumentError, exc:
-       print exc.message
+   except argparse.ArgumentError as exc:
+       print(exc.message)
 
    except IOError:  
-       print "Cannot open input files."
+       print("Cannot open input files.")
 
-   except Exception, e:
-       print ("Error: %s" %e)
+   except Exception as e:
+       print("Error: %s" %e)
 
 display_info() 

@@ -21,12 +21,12 @@ def display_stock():
       Display stock available in inventory.  
 
    '''
-   print "\n Welcome to Online Store"
-   print "\nStock Available"
-   print "\nItems  Cost"
-   print "-------------"
+   print ("\n Welcome to Online Store")
+   print ("\nStock Available")
+   print ("\nItems  Cost")
+   print ("-------------")
    for key in stock:
-      print key,"\t", prices[key]
+      print (key,"\t", prices[key])
 
 def compute_bill(food):
     '''
@@ -46,7 +46,7 @@ def update_data():
   
    '''
    purchase_Data = {}
-   purchase_Data['user'] = raw_input('Enter your Name: ')
+   purchase_Data['user'] = input('Enter your Name: ')
    purchase_Data['item'] = shopList
    now = datetime.now()
    purchase_Data['date_of_purchase'] = '%s/%s/%s' % (now.day, now.month, now.year)
@@ -66,10 +66,10 @@ def fill_cart():
    i = 0
    while 1:
       i += 1 
-      item = raw_input("Enter your Item to the List (Press enter to stop): ")
+      item = input("Enter your Item to the List (Press enter to stop): ")
       if item not in stock and item !='':
-         print "Item not in Stock"
-         item = raw_input("Enter your Item to the List (Press enter to stop): ")
+         print ("Item not in Stock")
+         item = input("Enter your Item to the List (Press enter to stop): ")
       if item=='':
          break
       shopList.append(item)
@@ -81,14 +81,14 @@ def display_order():
         Display user order.
     
     '''
-    print "\nThank you for placing order. Your Order Details are:"
-    print "Items Cost"
-    print "----------"
+    print ("\nThank you for placing order. Your Order Details are:")
+    print ("Items Cost")
+    print ("----------")
     for item in shopList:
-       print item,"\t", prices[item]
+       print (item,"\t", prices[item])
     
     bill_cost = compute_bill(shopList)
-    print "Total Bill Cost: ", bill_cost
+    print ("Total Bill Cost: "), bill_cost
 
 
 fill_cart()
