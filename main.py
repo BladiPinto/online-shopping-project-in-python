@@ -1,3 +1,9 @@
+#Importamos los paquetes necesarios 
+import pandas as pd
+import csv
+from IPython.display import clear_output
+from csv import writer
+
 shopping = [{"id": 1001, "Nombre": "HP-AE12", "Disponible": 100, "Precio": 25000, "Costo": 24000},
             {"id": 1002, "Nombre": "DELL", "Disponible": 100, "Precio": 35000, "Costo": 34000},
             {"id": 1003, "Nombre": "ASUS", "Disponible": 100, "Precio": 28000, "Costo": 27000},
@@ -10,7 +16,6 @@ shopping = [{"id": 1001, "Nombre": "HP-AE12", "Disponible": 100, "Precio": 25000
             {"id": 1010, "Nombre": "VIVO", "Disponible": 100, "Precio": 12000, "Costo": 11000}]
 
 shopping1 = shopping
-temp = []
 order = ""
 
 
@@ -26,10 +31,13 @@ def adminLoginWindow():
 
 
 def adminDisplayMenuWindow():
-    print("Id\tNombre\tDisponible\tPrecio\tCosto")
+    print("Id\tNombre\\ttDisponible\tPrecio\tCosto")
     print("====================================================")
-    for d in shopping:
-        print(f'{d["id"]}\t{d["Nombre"]}\t{d["Disponible"]}\t\t{d["Precio"]}\t{d["Costo"]}')
+    results = []
+    with open('shopping.csv') as File:
+        reader = csv.DictReader(File)
+        for d in reader:
+            print(f'{d["id"]}\t{d["nombre"]}\t\t{d["disponible"]}\t\t{d["precio"]}\t{d["costo"]}')
 
 
 def addproducts():
@@ -42,13 +50,40 @@ def addproducts():
         new_costo = int(input("Ingresa Costo : "))
         d = [{"id": new_id, "Nombre": new_Nombre, "Disponible": new_Disponible, "Precio": new_Precio,
               "Costo": new_costo}]
-        shopping.extend(d)
+        list=[new_id,new_Nombre,new_Disponible,new_Precio,new_costo]
+        with open ('shopping.csv' , 'a' , newline ='') as f_object:
+            writer_object = writer(f_object)
+            writer_object.writerow(list)
+            f_object.close()
         adminDisplayMenuWindow()
 
 
 def removeproducts():
     dressId = int(input("Ingresa el ID del Producto : "))
     found = False
+    data=pd.read_csv('shopping.csv', sep=",")
+    shopping1 = pd.DataFrame(data)
+    disponible=shopping1[shopping1['id']==dressId]['disponible']
+
+    rem=int(input("\n Cuantas Unidades desea remover "))
+    temp=disponible-rem
+    print("--------------\n Borrando Item total : ",temp)
+
+    data.to_csv('outputfile.csv', 
+                 index = False)
+
+    new_id = shopping1[shopping1['id']==dressId]['id'],
+    new_Nombre = shopping1[shopping1['id']==dressId]['nombre']
+    new_Precio = shopping1[shopping1['id']==dressId]['precio']
+    new_costo = shopping1[shopping1['id']==dressId]['costo']
+    list=[new_id,new_Nombre,temp,new_Precio,new_costo]
+
+    with open ('outputfile.csv' , 'a' , newline ='') as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(list)
+        f_object.close()
+
+    """
     for d in shopping1:
         found = d["id"] == dressId
         if found != True:
@@ -61,7 +96,8 @@ def removeproducts():
         print(f"{dressId} ")
     else:
         print(f"{dressId}'s one Disponible is removed from the list")
-    adminDisplayMenuWindow()
+    """
+    #adminDisplayMenuWindow()
 
 
 def Disponibleproducts():
@@ -85,7 +121,7 @@ def logoutwindow():
 
 
 def adminOptions():
-    choice = int(input("Please Ingresa user choice : "))
+    choice = int(input("Por favor Selecciona una Opcion: "))
     if choice == 1:
         adminDisplayMenuWindow()
         print("\n===================================================\n")
@@ -132,10 +168,10 @@ def adminOptions():
 
 def userLoginWindow():
     print("=====================\n")
-    print("1.Display Menu")
-    print("2.Place order")
-    print("3.Cancel order")
-    print("4.Logout")
+    print("1.Mostrar Menu")
+    print("2.Realizar una Orden ")
+    print("3.Cancelar una orden")
+    print("4.Cerrar sesiòn")
     print("\n======================")
 
 
@@ -237,17 +273,59 @@ def login():
             print("Invalid password. Please Ingresa valid password")
 
     elif tp == 'U' or tp == 'u':
-        password = input("Ingresa the password : ")
-        if (password == "cliente"):
-            userLoginWindow()
-            userChoiceOptions()
+        print("\nESCOGE UNA OPCION\n")
+        option = input("1. Ingresar\n2. Registrar\n3. Quit\n Seleccion :")
+
+        if option == "1" :
+            loginUser()
+        elif option == "2":
+            registerUser()
+        elif option == "3":
+            print("¡Gracias por usar nuestro software!\n")
+            login()
+
+        elif option == "4":
+            pass
         else:
-            print("Invalid password. Please Ingresa valid password")
-    else:
-        print("Invalid user type. Ingresa valid user type")
+            print("No has introducido una opción válida.")
+        
+#Resgistro de Usuarios 
+def registerUser():
+    with open("users.csv", mode="a", newline="") as f:
+        writer = csv.writer(f, delimiter=",")
+        print("\nPara registrate completa los datos y Presiona ENTER")
+        print("----------------------------------------------------\n")
+        email = input("E-mail: ")
+        password = input("Password: ")
+        password2 = input("Repetir password: ")
+        clear_output()
+        if password == password2:
+            writer.writerow( [email, password] )
+            print("\nESTAS REGISTRADO , BIENVENIDO!")
+            print("******************************\n")
+        else:
+             print("\nAlgo salió mal. Inténtalo de nuevo.")
+
+def loginUser():
+    print("\nPara iniciar sesión, ingrese la información siguiente :")
+    email = input("Email: ")
+    password = input("Password: ")
+
+    clear_output
+    with open("users.csv", mode="r") as f:
+        reader = csv.reader(f, delimiter=",")
+        for row in reader:
+            if row == [email, password]:
+                print("Ahora está conectado!")
+                userLoginWindow()
+                userChoiceOptions()
+                return True
+    print("Algo salió mal, intenta de nuevo.")
+    return False
 
 
 login()
+
 
 
 
