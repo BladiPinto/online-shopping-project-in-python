@@ -71,14 +71,15 @@ def removeproducts():
 
     data.to_csv('outputfile.csv', 
                  index = False)
+    list = shopping1.loc[shopping1['id']==dressId]
+    print(list)
+    #new_id = shopping1[shopping1['id']==dressId]['id'],
+    #new_Nombre = shopping1[shopping1['id']==dressId]['nombre']
+    #new_Precio = shopping1[shopping1['id']==dressId]['precio']
+    #new_costo = shopping1[shopping1['id']==dressId]['costo']
+    #list=[new_id,new_Nombre,temp,new_Precio,new_costo]
 
-    new_id = shopping1[shopping1['id']==dressId]['id'],
-    new_Nombre = shopping1[shopping1['id']==dressId]['nombre']
-    new_Precio = shopping1[shopping1['id']==dressId]['precio']
-    new_costo = shopping1[shopping1['id']==dressId]['costo']
-    list=[new_id,new_Nombre,temp,new_Precio,new_costo]
-
-    with open ('outputfile.csv' , 'a' , newline ='') as f_object:
+    with open ('outputfile.csv' , 'r' , newline ='') as f_object:
         writer_object = writer(f_object)
         writer_object.writerow(list)
         f_object.close()
