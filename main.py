@@ -1,5 +1,6 @@
 #Importamos los paquetes necesarios 
 import pandas as pd
+import numpy as np
 import csv
 from IPython.display import clear_output
 from csv import writer
@@ -16,6 +17,7 @@ shopping = [{"id": 1001, "Nombre": "HP-AE12", "Disponible": 100, "Precio": 25000
             {"id": 1010, "Nombre": "VIVO", "Disponible": 100, "Precio": 12000, "Costo": 11000}]
 
 shopping1 = shopping
+temp =[]
 order = ""
 
 
@@ -25,13 +27,12 @@ def adminLoginWindow():
     print("2.Agregar Producto")
     print("3.Eliminar Producto")
     print("4.Productos Disponibles")
-    print("5.Ingresos totales")
-    print("6.Cerrar sesión")
+    print("5.Cerrar sesión")
     print("=====================")
 
 
 def adminDisplayMenuWindow():
-    print("Id\tNombre\\ttDisponible\tPrecio\tCosto")
+    print("Id\tNombre\t\tDisponible\tPrecio\tCosto")
     print("====================================================")
     results = []
     with open('shopping.csv') as File:
@@ -41,7 +42,8 @@ def adminDisplayMenuWindow():
 
 
 def addproducts():
-    n = int(input("Ingrese el N° de elementos para agregar : "))
+    print("INGRESAR NUEVO PRODUCTO \n")
+    n = int(input("Ingrese el N° de elementos del nuevo Producto : "))
     for i in range(n):
         new_id = int(input("Ingresa id : "))
         new_Nombre = input("Ingresa Nombre : ")
@@ -59,62 +61,51 @@ def addproducts():
 
 
 def removeproducts():
-    dressId = int(input("Ingresa el ID del Producto : "))
-    found = False
-    data=pd.read_csv('shopping.csv', sep=",")
-    shopping1 = pd.DataFrame(data)
-    disponible=shopping1[shopping1['id']==dressId]['disponible']
+    new = []
+    print("\n")
+    dressId = input("Ingresa el ID del Producto : ")
+    res=int(input("\nCuantas unidades desea eliminar ? :"))
+    with open('shopping.csv') as File:
+        reader = csv.DictReader(File)
+        for d in reader:
+            if d["id"] == dressId:
+                new.append(d["id"])
+                new.append(d["nombre"])
+                new.append(int(d["disponible"])-res)
+                new.append(d["costo"])
+                new.append(d["precio"])
+    with open ('shopping.csv' , 'a' , newline ='') as f_object:
+                writer_object = writer(f_object)
+                writer_object.writerow(new)
+                f_object.close()
+    reemplacsv()
 
-    rem=int(input("\n Cuantas Unidades desea remover "))
-    temp=disponible-rem
-    print("--------------\n Borrando Item total : ",temp)
 
-    data.to_csv('outputfile.csv', 
-                 index = False)
-    list = shopping1.loc[shopping1['id']==dressId]
-    print(list)
-    #new_id = shopping1[shopping1['id']==dressId]['id'],
-    #new_Nombre = shopping1[shopping1['id']==dressId]['nombre']
-    #new_Precio = shopping1[shopping1['id']==dressId]['precio']
-    #new_costo = shopping1[shopping1['id']==dressId]['costo']
-    #list=[new_id,new_Nombre,temp,new_Precio,new_costo]
+def reemplacsv():
+    df_s =  pd.read_csv('shopping.csv')
 
-    with open ('outputfile.csv' , 'r' , newline ='') as f_object:
-        writer_object = writer(f_object)
-        writer_object.writerow(list)
-        f_object.close()
+    b=df_s.drop_duplicates(df_s.columns[~df_s.columns.isin(['nombre','disponible','precio','costo'])],keep='last')
+    print(b)
 
-    """
-    for d in shopping1:
-        found = d["id"] == dressId
-        if found != True:
-            temp.append(d)
-            continue
-        if found == True:
-            d["Disponible"] -= 1
-    print("Borrando Item....")
-    if len(temp) == d:
-        print(f"{dressId} ")
-    else:
-        print(f"{dressId}'s one Disponible is removed from the list")
-    """
-    #adminDisplayMenuWindow()
-
+    b.to_csv('shopping.csv',index=False)
 
 def Disponibleproducts():
     Total = 0
+    suma = []
     print("\n")
-    for d in shopping:
-        print(f'{d["Nombre"]} = {d["Disponible"]}')
-        Total += (d["Disponible"])
-    print("\nTotal Disponible goods is : ", Total)
 
+    print("Nombre\t\tDisponible")
+    print("====================================================")
 
-def monthlyincome():
-    total = 0
-    for d in shopping:
-        total += ((d["Disponible"] * d["Precio"]) - (d["Disponible"] * d["Costo"]))
-    print("\nTotal income is : ", total)
+    with open('shopping.csv') as File:
+        reader = csv.DictReader(File)
+        for d in reader:
+            print(f'{d["nombre"]}\t\t{d["disponible"]}')
+            suma.append(d["disponible"])
+            #Total += (d["disponible"])
+    for num in map(int, suma):
+        Total += num
+    print("\nTotal Productos Disponibles : ", Total)
 
 
 def logoutwindow():
@@ -152,15 +143,9 @@ def adminOptions():
         print("\n===================================================\n")
         adminOptions()
     elif choice == 5:
-        monthlyincome()
-        print("\n===================================================\n")
-        adminLoginWindow()
-        print("\n===================================================\n")
-        adminOptions()
-    elif choice == 6:
         logoutwindow()
     else:
-        print("\nInvalid Choice. Please Ingresa valid choice")
+        print("\nElección no válida. Por favor Ingresa elección válida")
         print("\n===================================================\n")
         adminLoginWindow()
         print("\n===================================================\n")
@@ -171,70 +156,76 @@ def userLoginWindow():
     print("=====================\n")
     print("1.Mostrar Menu")
     print("2.Realizar una Orden ")
-    print("3.Cancelar una orden")
-    print("4.Cerrar sesiòn")
+    print("3.Cerrar sesiòn")
     print("\n======================")
 
 
 def userDisplayMenuWindow():
-    print("Id\tNombre\tDisponible\tPrecio")
-    print("===================================================")
-    for d in shopping:
-        print(f'{d["id"]}\t{d["Nombre"]}\t{d["Disponible"]}\t\t{d["Precio"]}')
+    print("Id\tNombre\t\tDisponible\tPrecio")
+    print("====================================================")
+    results = []
+    with open('shopping.csv') as File:
+        reader = csv.DictReader(File)
+        for d in reader:
+            print(f'{d["id"]}\t{d["nombre"]}\t\t{d["disponible"]}\t\t{d["precio"]}')
 
 
 def user_id():
     userDisplayMenuWindow()
-    p_id = int(input("\nIngresa the id : "))
+    p_id = int(input("\nIngresa el id : "))
 
 
 def placeOrder():
     order_number = 10
+    new = []
     userDisplayMenuWindow()
-    p_id = int(input("\nIngresa the id : "))
-
-    for d in shopping:
-        if d["id"] == p_id:
-            print("\nId\tNombre\tDisponible\tPrecio")
-            print("=============================================================")
-            print(f'{d["id"]}\t{d["Nombre"]}\t{d["Disponible"]}\t\t{d["Precio"]}')
-            order = '{d["id"]}\t{d["Nombre"]}\t{d["Disponible"]}\t\t{d["Precio"]}'
-            conform = input("\nDo you want to place an order on the above shown product : Y/N ")
-
-            if conform == 'Y' or conform == 'y':
-                print("\nSuccessfully placed the order on the product {} {}".format(d["id"], d["Nombre"]))
-                order_number += 1
-                print("Your order number is : ", order_number)
-                d["Disponible"] -= 1
-                break
-
-            elif conform == 'N' or conform == 'n':
-                print("The order is not placed. You can carry on with you purchase. Happy shopping!!!!")
-                break
-            else:
-                print("\nYou have Ingresaed wrong option. Please Ingresa again\n")
-                conform = input("\nDo you want to place an order on the above shown product : Y/N ")
-                break
-
-    if d["id"] != p_id:
-        print("\nYou have Ingresaed invalid id. Please Ingresa valid id\n")
-        user_id()
-    print("\nDisponible products : \n")
-    userDisplayMenuWindow()
+    p_id = input("\nIngresa el id : ")
+    res=int(input("\nCuantas unidades desea adquirir ? :"))
+    with open('shopping.csv') as File:
+        reader = csv.DictReader(File)
+        for d in reader:
+            if d["id"] == p_id:
+                new.append(d["id"])
+                new.append(d["nombre"])
+                new.append(int(d["disponible"])-res)
+                new.append(d["costo"])
+                new.append(d["precio"])        
+                print("\nId\tNombre\tDisponible\tPrecio")
+                print("=============================================================")
+                print(f'{d["id"]}\t{d["nombre"]}\t{d["disponible"]}\t\t{d["precio"]}')
+                order = '{d["id"]}\t{d["nombre"]}\t{d["disponible"]}\t\t{d["precio"]}'
 
 
-def cancelOrder():
-    found = False
-    temp = []
-    order_id = input("Ingresa the order id : ")
-    for d in shopping:
-        found = d["id"] == order_id
-        if found != True:
-            temp.append(d)
-    if len(temp) == d:
-        print(f'{order_id} is ')
-    else:
-        print(f'{order_id} is removed from the placed order')
+                conform = input("\n¿Desea realizar un pedido en el producto que se muestra arriba? Y/N ")
+                
+                                
+                if conform == 'Y' or conform == 'y':
+                    print("\nRealizó con éxito el pedido en el producto {} {}".format(d["id"], d["nombre"]))
+                    order_number += 1
+                    print("Su numero de orden es : ", order_number)
+
+                    break
+
+                elif conform == 'N' or conform == 'n':
+                    print("No se realiza el pedido. Puedes continuar con tu compra. ¡¡¡¡Feliz compra!!!!")
+                    break
+                else:
+                    print("\nHas ingresado una opción incorrecta. Por favor Ingresa de nuevo\n")
+                    conform = input("\n¿Desea realizar un pedido en el producto que se muestra arriba?: Y/N ")
+                    break
+
+        if d["id"] != p_id:
+            print("\nHa ingresado una identificación no válida. Por favor Ingresa identificación válida\n")
+            user_id()
+        print("\nProductos Disponibles : \n")
+
+    with open ('shopping.csv' , 'a' , newline ='') as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(new)
+        f_object.close()
+    reemplacsv() 
+
+
 
 
 def userChoiceOptions():
@@ -252,26 +243,20 @@ def userChoiceOptions():
         print("\n===================================================\n")
         userChoiceOptions()
     elif choice == 3:
-        cancelOrder()
-        print("\n===================================================\n")
-        userLoginWindow()
-        print("\n===================================================\n")
-        userChoiceOptions()
-    elif choice == 4:
         logoutwindow()
     else:
-        print("Invalid Choice. Please Ingresa valid choice")
+        print("Elección no válida. Por favor Ingresa elección válida")
 
 
 def login():
-    tp = input("Login Admin/Login User [Type A to Login in the Admin/ Type U to Login in the User] : ")
+    tp = input("Iniciar sesión administrador/usuario de inicio de sesión \n[Escriba A para iniciar sesión en el administrador/Escriba U para iniciar sesión en el usuario] : ")
     if tp == 'A' or tp == 'a':
-        password = input("Ingresa the password : ")
+        password = input("Ingresa la contraseña : ")
         if password == "admin":
             adminLoginWindow()
             adminOptions()
         else:
-            print("Invalid password. Please Ingresa valid password")
+            print("Contraseña invalida. Por favor Ingresa contraseña válida")
 
     elif tp == 'U' or tp == 'u':
         print("\nESCOGE UNA OPCION\n")
