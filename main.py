@@ -5,21 +5,6 @@ import csv
 from IPython.display import clear_output
 from csv import writer
 
-shopping = [{"id": 1001, "Nombre": "HP-AE12", "Disponible": 100, "Precio": 25000, "Costo": 24000},
-            {"id": 1002, "Nombre": "DELL", "Disponible": 100, "Precio": 35000, "Costo": 34000},
-            {"id": 1003, "Nombre": "ASUS", "Disponible": 100, "Precio": 28000, "Costo": 27000},
-            {"id": 1004, "Nombre": "APPLE", "Disponible": 100, "Precio": 60000, "Costo": 59000},
-            {"id": 1005, "Nombre": "ACER", "Disponible": 100, "Precio": 24000, "Costo": 23000},
-            {"id": 1006, "Nombre": "SAMSUNG", "Disponible": 100, "Precio": 35000, "Costo": 34000},
-            {"id": 1007, "Nombre": "OPPO", "Disponible": 100, "Precio": 15000, "Costo": 14000},
-            {"id": 1008, "Nombre": "XAOMI", "Disponible": 100, "Precio": 45000, "Costo": 44000},
-            {"id": 1009, "Nombre": "HUAWEI", "Disponible": 100, "Precio": 20000, "Costo": 19000},
-            {"id": 1010, "Nombre": "VIVO", "Disponible": 100, "Precio": 12000, "Costo": 11000}]
-
-shopping1 = shopping
-temp =[]
-order = ""
-
 
 def adminLoginWindow():
     print("=====================")
