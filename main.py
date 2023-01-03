@@ -28,7 +28,7 @@ def adminDisplayMenuWindow():
 
 def addproducts():
     print("INGRESAR NUEVO PRODUCTO \n")
-    n = int(input("Ingrese el N° de elementos del nuevo Producto : "))
+    n = int(input("Ingrese el N° de elementos nuevos : "))
     for i in range(n):
         new_id = int(input("Ingresa id : "))
         new_Nombre = input("Ingresa Nombre : ")
