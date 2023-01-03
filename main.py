@@ -27,6 +27,14 @@ def adminDisplayMenuWindow():
 
 
 def addproducts():
+    print("DESEA INGRESAR UN PRODUCTO :\n 1. NUEVO \n2. EXISTENTE ")
+    choice = int(input("Por favor Selecciona una Opcion: "))
+    if choice == 1:
+        addnew()
+    elif choice == 2:
+        adminDisplayMenuWindow()
+        addexistente()
+def addnew():
     print("INGRESAR NUEVO PRODUCTO \n")
     n = int(input("Ingrese el N° de elementos nuevos : "))
     for i in range(n):
@@ -44,7 +52,25 @@ def addproducts():
             f_object.close()
         adminDisplayMenuWindow()
 
-
+def addexistente():
+    new = []
+    print("\n")
+    dressId = input("Ingresa el ID del Producto : ")
+    res=int(input("\nCuantas unidades desea aumentar ? :"))
+    with open('shopping.csv') as File:
+        reader = csv.DictReader(File)
+        for d in reader:
+            if d["id"] == dressId:
+                new.append(d["id"])
+                new.append(d["nombre"])
+                new.append(int(d["disponible"])+res)
+                new.append(d["costo"])
+                new.append(d["precio"])
+    with open ('shopping.csv' , 'a' , newline ='') as f_object:
+                writer_object = writer(f_object)
+                writer_object.writerow(new)
+                f_object.close()
+    reemplacsv()
 def removeproducts():
     new = []
     print("\n")
@@ -214,7 +240,7 @@ def placeOrder():
 
 
 def userChoiceOptions():
-    choice = int(input("Please Ingresa user choice : "))
+    choice = int(input("Escoge una Opcion : "))
     if choice == 1:
         userDisplayMenuWindow()
         print("\n===================================================\n")
